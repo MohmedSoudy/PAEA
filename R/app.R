@@ -24,6 +24,8 @@ library(igraph)
 library(networkD3)
 library(htmlwidgets)
 
+library(shinyDirectoryInput)
+
 source("Get.Pathway.org.r")
 source("Get.cpd.fast.r")
 source("Get.cpd.r")
@@ -43,6 +45,7 @@ source("pathway.comp.shared.r")
 
 source("relatedpathway.disease.r")
 source("plot.network.r")
+source("get.enzyme.reaction.r")
 source("sankey.cpd.plot.r")
 
 ui <- fluidPage(
@@ -93,14 +96,16 @@ ui <- fluidPage(
                                                 sliderInput("height", "Plot Height (in)", 1, 100, 1, value = 10),
                                                 sliderInput("dpi", "Plot dpi", 50, 1000, 50, value = 300),
                                                 
+
                                                 textInput("save_result_by","Save the result by:",placeholder = "e,g. 'Sample1"),
                                                 
-                                                shinyDirButton('folder_action', 'Save Result In', 
-                                                               'Please select a folder', 
-                                                               FALSE, 
-                                                               style='padding:10px; font-size:100%; margin-top:0.5em',
-                                                               width = 200, icon = icon("download")),
+                                                # shinyDirButton('folder_action', 'Save Result In', 
+                                                #                'Please select a folder', 
+                                                #                FALSE, 
+                                                #                style='padding:10px; font-size:100%; margin-top:0.5em',
+                                                #                width = 200, icon = icon("download")),
             
+                                                #directoryInput('folder_action', label = 'Please select a directory',value = '~' ),
                                                 
                                                 actionButton("save_now", "Download", 
                                                              style='padding:10px; font-size:100%; margin-top:0.5em', 
@@ -120,6 +125,9 @@ ui <- fluidPage(
                                                 
                                                 h1("Additional Analysis 1 (This may take longer time)"),
                                                 
+                                                # checkboxInput("enzymes", label = "Get Related Enzymes", value = FALSE),
+                                                # checkboxInput("reaction", label = "Get Related Eeactions", value = FALSE),
+
                                                 actionButton("additionalanalysis_start1", "Start", 
                                                              style='padding:10px; font-size:100%; margin-top:0.5em', width = 200, icon = icon("tasks")),
                                                 
@@ -243,7 +251,7 @@ server <- function(input, output , session ) {
   shinyjs::disable("Run_as")
   shinyjs::disable("download_session")
   shinyjs::disable("save_now")
-  shinyjs::disable("folder_action")
+  #shinyjs::disable("folder_action")
   shinyjs::disable("Run_en")
   shinyjs::disable("additionalanalysis_start1")
   shinyjs::disable("additionalanalysis_start2")
@@ -253,7 +261,6 @@ server <- function(input, output , session ) {
   #welcome tab
   observe({
     if(input$welcome_start[1] > 0){
-      print(input$welcome_start[1] )
       observeEvent(input$welcome_start,{
         
         updateTabsetPanel(session, "inTabset",
@@ -502,6 +509,8 @@ disease.related.plot <- NULL
 
 association.map.sig <- NULL
 related.pathways.disease <- NULL
+# enzymes.related <- NULL
+# reactions.related <- NULL
 
 observe({
   
@@ -521,7 +530,22 @@ observe({
     
     pathway.related.plot <<- plot.pathway.related.bar(related.pathways.disease)
     disease.related.plot <<- plot.disease.bar(related.pathways.disease)
-
+    
+    # if(input$enzymes == TRUE){
+    #   
+    #   pathway.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]
+    #   
+    #   enzymes.related <<- get.enzymes(pathway.sig, pathway.cpd.kegg)
+    #   
+    # }
+    # 
+    # if(input$reaction == TRUE){
+    #   
+    #   pathway.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]
+    #   
+    #   reactions.related <<- get.reaction(pathway.sig, pathway.cpd.kegg)
+    #   
+    # }
     
     output$additionalanalysisplots1 <- renderPlot({ pvalues.plot },height = 800, width = 1200)
     
@@ -657,10 +681,15 @@ observe({
 ## save result
 
 
+project_folder <- NULL
+
+
 observe({
   if(input$download_session[1] > 0){
     shinyjs::enable("save_now")
-    shinyjs::enable("folder_action")
+    #shinyjs::enable("folder_action")
+
+    project_folder <<- choose.dir()
     
     observeEvent(input$download_session,{
       
@@ -676,17 +705,24 @@ observe({
 
 ## Folder Selection
 
-volumes <- getVolumes()
-root <- getVolumes()()
-project_folder <- NULL
 
-
-observe({
-  shinyDirChoose(input, 'folder_action', roots=volumes() , session = session )
-  
-  project_folder <<- parseDirPath(root, input$folder_action)
-  
-})
+# observe({
+#   #volumes <- getVolumes()
+#   #root <- getVolumes()()
+#   #shinyDirChoose(input, 'folder_action', roots=volumes() , session = session )
+#   
+#   if (input$folder_action[1] > 0) {
+#     # condition prevents handler execution on initial app launch
+#     
+#     # launch the directory selection dialog with initial path read from the widget
+#     project_folder <<- readDirectoryInput(session, 'folder_action')
+#     
+#     # update the widget value
+#     updateDirectoryInput(session, 'folder_action', value = project_folder)
+#   }
+#   
+# 
+# })
 
 
 observe({
@@ -695,7 +731,10 @@ observe({
     showModal(modalDialog("Saving...", footer=NULL))
     
     save.result.path <- project_folder
-
+  
+      
+    ## plots
+    
     ggsave(filename = paste0(save.result.path, "/" , input$save_result_by, "_Enrichmentplot.tiff"), plot = PEA.normal.result.plot ,
            dpi = input$dpi, width = input$width, 
            height = input$height, limitsize = FALSE)
@@ -726,13 +765,61 @@ observe({
            height = input$height, limitsize = FALSE)
     
     
+    if(!is.null(pathway.network.plot)){
+      saveWidget(pathway.network.plot, paste0(save.result.path, "/" , input$save_result_by, "_PathWayNetwork.html"))
+    }
+    if(!is.null(disease.network.plot)){
+      saveWidget(disease.network.plot, paste0(save.result.path, "/" , input$save_result_by, "_DiseaseNetwork.html"))
+    }
+    
+    if(!is.null(snakey.plot)){
+      saveWidget(snakey.plot, paste0(save.result.path, "/" , input$save_result_by, "_CDPsSnaky.html"))
+    }
+
+    if(!is.null(pathway.related.plot)){
+    ggsave(filename = paste0(save.result.path, "/" , 
+                             input$save_result_by, "_Related Pathways.tiff"), plot = pathway.related.plot ,
+           dpi = input$dpi, width = input$width, 
+           height = input$height, limitsize = FALSE)
+    }
+    
+    if(!is.null(disease.related.plot)){
+    ggsave(filename = paste0(save.result.path, "/" , 
+                             input$save_result_by, "_Related Diseases.tiff"), plot = disease.related.plot ,
+           dpi = input$dpi, width = input$width, 
+           height = input$height, limitsize = FALSE)
+    }
+    
+    
+    #### csv
     write.csv(PEA.normal.result, paste0(save.result.path, "/" , input$save_result_by, "_Enrichmentplot.csv"))
     
     write.csv(PEA.association.result, paste0(save.result.path, "/" , input$save_result_by, "_Associationplot.csv"))
     
     if (pathway.information.found == "No"){
-      write.csv(pathway.cpd.kegg , paste0(save.result.path, "/" , input$save_result_by, "Host_info.csv") )
+      write.csv(pathway.cpd.kegg , paste0(save.result.path, "/" , input$save_result_by, "_Host_info.csv") )
     }
+    
+
+    
+    if(!is.null(related.pathways.disease)){
+      
+
+      write.csv( related.pathways.disease, paste0(save.result.path, "/" , input$save_result_by, "_Related Pathways and Diseases.csv") )
+      
+    }
+    
+    # if(!is.null(enzymes.related)){
+    #   write.csv(enzymes.related, paste0(save.result.path, "/" , input$save_result_by, "Related Enzymes.csv") )
+    #   
+    # }
+    # 
+    # 
+    # if(!is.null(reactions.related)){
+    #   write.csv(reactions.related, paste0(save.result.path, "/" , input$save_result_by, "Related Reactions.csv") )
+    #   
+    # }
+    
     removeModal()
     
   }

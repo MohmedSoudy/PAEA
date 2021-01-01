@@ -87,3 +87,6 @@ plot.disease.bar <- function(related.disease.info){
   return(disease.related.plot)
   
 } 
+
+
+
