@@ -4,6 +4,7 @@ library(shinyFiles)
 library(rhandsontable)
 library(shinythemes)
 library(shinyjs)
+library(shinyalert)
 
 library(stringr)
 library(stats)
@@ -42,7 +43,7 @@ source("pathway.comp.shared.r")
 
 source("relatedpathway.disease.r")
 source("plot.network.r")
-
+source("sankey.cpd.plot.r")
 
 ui <- fluidPage(
   
@@ -140,9 +141,17 @@ ui <- fluidPage(
                                                 
                                                 h1("Additional Analysis 2 (This may take longer time)"),
                                                 
-                                                sliderInput("charger", "The strength of the node repulsion", -1000, 0, -50, value = -200),
+                                                h2("Parameters For The Network Plots"),
+                                                
+                                                sliderInput("charger", "The strength of the node repulsion", -1000, 0, -50, value = -100),
                                                 
                                                 sliderInput("linkDistance", "The distance between the links in pixels", 0, 100, 10, value = 20),
+                                                
+                                                h2("Parameters For The Sankey Plot"),
+                                                
+                                                sliderInput("toppathway", "Top N Pathways (P-adj.)", 0, 50, 1, value = 5),
+                                                
+                                                sliderInput("atleastcpd", "The number of pathways the CPD should have a role in;", 0, 10, 1, value = 1),
                                                 
                                                 actionButton("additionalanalysis_start2", "Start", 
                                                              style='padding:10px; font-size:100%; margin-top:0.5em', width = 200, icon = icon("tasks")),
@@ -150,7 +159,8 @@ ui <- fluidPage(
                                                 
                                                 radioButtons("add_on_plots2", "Type of Plot:",
                                                              c("Related Diseases Network" = "networkdiseasescheckbox",
-                                                               "Related Pathways Network" = "networkpathwayscheckbox")
+                                                               "Related Pathways Network" = "networkpathwayscheckbox",
+                                                               "Related CPDs Network" = "sankeycpdplotcheckbox")
                                                 ),
                                                 
                                                 
@@ -206,7 +216,10 @@ ui <- fluidPage(
                                 tabPanel("Additional Analysis 2", h1(""),
                                          
                                          forceNetworkOutput("additionalanalysisplots2",  height = "1000px", 
-                                                        width = "2000px" ),
+                                                        width = "100%" ),
+                                         h1(""),
+                                         sankeyNetworkOutput("additionalanalysisplots2.2",  height = "1000px", 
+                                                            width = "100%" ),
                                          
                                          value = "additionalanalysis2"),
                                 
@@ -261,7 +274,9 @@ server <- function(input, output , session ) {
                "height",
                "dpi",
                "charger",
-               "linkDistance"),
+               "linkDistance",
+               "toppathway",
+               "atleastcpd"),
       
       Value = as.numeric(c(input$adj_p_en,
                            input$p_as,
@@ -270,7 +285,9 @@ server <- function(input, output , session ) {
                            input$height,
                            input$dpi,
                            input$charger,
-                           input$linkDistance)),
+                           input$linkDistance,
+                           input$toppathway,
+                           input$atleastcpd)),
       
       stringsAsFactors = FALSE)
     
@@ -479,6 +496,12 @@ CPDs.plot <- NULL
 pathways.plot <- NULL
 foldvalues.plot <- NULL
 foldvalues.plot <- NULL
+pathway.related.plot <- NULL
+disease.related.plot <- NULL
+
+
+association.map.sig <- NULL
+related.pathways.disease <- NULL
 
 observe({
   
@@ -491,7 +514,17 @@ observe({
     pvalues.plot <<- pathway.comp.shared.pvalue( enr.result =  PEA.normal.result, ass.result =  PEA.association.result, org.data =  pathway.cpd.kegg)
     foldvalues.plot <<- pathway.comp.shared.fold( enr.result =  PEA.normal.result, ass.result =  PEA.association.result, org.data =  pathway.cpd.kegg)
     
+    
+    association.map.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]$KEGG_PATHWAY_ID
+    
+    related.pathways.disease <<- get.info.relatedpathway.disease(association.map.sig, pathway.cpd.kegg)
+    
+    pathway.related.plot <<- plot.pathway.related.bar(related.pathways.disease)
+    disease.related.plot <<- plot.disease.bar(related.pathways.disease)
+
+    
     output$additionalanalysisplots1 <- renderPlot({ pvalues.plot },height = 800, width = 1200)
+    
     
     removeModal()
   }
@@ -514,42 +547,30 @@ if(input$add_on_plots1 == "foldvalues"){
 
 if(input$add_on_plots1 == "diseasescheckbox"){
 
-  output$additionalanalysisplots1 <- renderPlot({ pvalues.plot },height = 800, width = 1200)
+  output$additionalanalysisplots1 <- renderPlot({ disease.related.plot },height = 800, width = 1200)
 }
 
 if(input$add_on_plots1 == "pathwayscheckbox"){
 
-  output$additionalanalysisplots1 <- renderPlot({ pvalues.plot },height = 800, width = 1200)
+  output$additionalanalysisplots1 <- renderPlot({ pathway.related.plot },height = 800, width = 1200)
 }
 
 
   }
 })
 
-## additional analysis2
+## additional analysis2 only on the sig. pathways
 
-association.map.sig <- NULL
-related.pathways.disease <- NULL
+
 pathway.network.plot <- NULL
 disease.network.plot <- NULL   
+snakey.plot <- NULL
+
 
 observe({
   
-  if(input$additionalanalysis_start2[1] >0 ){
-    showModal(modalDialog("Loading...", footer=NULL))
+  if(input$additionalanalysis_start2[1] > 0){
     
-    association.map.sig <<- PEA.association.result[PEA.association.result$p_adj < 0.05,]$KEGG_PATHWAY_ID
-    
-    related.pathways.disease <<- get.info.relatedpathway.disease(association.map.sig, pathway.cpd.kegg)
-    
-    removeModal()
-    
-  }
-    
-  })
-
-observe({
-  
   
   
   if(input$add_on_plots2 == "networkdiseasescheckbox"){
@@ -569,6 +590,38 @@ observe({
       output$additionalanalysisplots2 <- renderForceNetwork( pathway.network.plot )
       }}
     
+    if(input$add_on_plots2 == "sankeycpdplotcheckbox"){
+      if(!is.null(related.pathways.disease) ){
+        output$additionalanalysisplots2 <- renderForceNetwork( NULL )
+        
+      pathway.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]
+
+
+      tryCatch(
+        expr = {
+          
+          snakey.plot <<- sanky.cpd.plot(pathway.sig = pathway.sig, org.df = pathway.cpd.kegg, 
+                                         top.n = input$toppathway,
+                                         cpd.atleast = input$atleastcpd)
+          output$additionalanalysisplots2.2 <- renderSankeyNetwork( snakey.plot )
+          
+
+        },
+        warning = function(w){
+          output$additionalanalysisplots2.2 <- renderSankeyNetwork( NULL )
+
+        },
+        error = function(e){ 
+          output$additionalanalysisplots2.2 <- renderSankeyNetwork( NULL )
+          
+        }
+      )
+      
+      
+      
+      }
+    }
+  }
 
   })
 #next
