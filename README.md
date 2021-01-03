@@ -26,6 +26,23 @@ run.shiny.paea()
 
 PAEA can also run online at; 
 
+## Package information
+
+- Version: **v1.0.0**
+- License: GPL-3
+- Encoding: UTF-8
 
 ![](https://www.57357.org/app/uploads/2019/12/logo-2.png)
+
+# Contribution Guidelines
+
+For bugs and suggestions, the most effective way is by raising an issue on the github issue tracker. Github allows you to classify your issues so that we know if it is a bug report, feature request or feedback to the authors.
+
+**Email: Proteomicslab2017@gmail.com**
+**Email: ali.anwar@57357.org**
+**Email: aliali.mostafa99@gmail.com**
+
+# Future plans
+
+# Citation
 
