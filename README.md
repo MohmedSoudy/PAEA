@@ -1,4 +1,4 @@
-# PEAA
+# PAEA
 
 
 <img align="right" width="250" height="250" src="https://github.com/AliYoussef96/PEAA/blob/main/logos/paealogo.png">
