@@ -3,6 +3,7 @@
 
 <img align="right" width="250" height="250" src="https://github.com/AliYoussef96/PEAA/blob/main/logos/paealogo.png">
 
+# Description
 
 ## Availability and Installation 
 
@@ -32,7 +33,6 @@ PAEA can also run online at;
 - License: GPL-3
 - Encoding: UTF-8
 
-![](https://www.57357.org/app/uploads/2019/12/logo-2.png)
 
 # Contribution Guidelines
 
@@ -46,3 +46,4 @@ For bugs and suggestions, the most effective way is by raising an issue on the g
 
 # Citation
 
+![](https://www.57357.org/app/uploads/2019/12/logo-2.png)
