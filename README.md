@@ -26,7 +26,6 @@ For more information about the PAEA implementation and how the algorithm work, p
 To use PAEA 1.0.0, first install all package dependencies. Ensure that you have necessary system environment configured. R base with version > 3.6.1 is recommended.
 
 ```R
-
 dependencies.pkg.cran <- c("shiny", "shinycustomloader", "shinyFiles", "rhandsontable", "shinythemes", "shinyjs", "ggplot2" , 
                            "dplyr", "ggnewscale", "data.table", "qdapRegex", "VennDiagram" , "reshape2", "igraph",
                            "networkD3", "htmlwidgets", "stringr")
@@ -40,12 +39,12 @@ installed.packages(dependencies.pkg.cran)
 
 devtools::install_github('wleepang/shiny-directory-input')
 
-
 ```
+#### Step 2. 
 
 **See the Full Documentation for all the [details]() ; how to use the PAEA Shiny app. and how to save the results.**
 
-2-	Online version as a Shiny app.
+### 2-	Online version as a Shiny app.
 
 PAEA can also run online at; 
 
