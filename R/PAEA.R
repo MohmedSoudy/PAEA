@@ -17,8 +17,6 @@ library(qdapRegex)
 library(VennDiagram)
 library(reshape2)
 
-library(  gridExtra )
-
 library(igraph)
 library(networkD3)
 library(htmlwidgets)
