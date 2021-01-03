@@ -1,7 +1,9 @@
 # PAEA
 
+<p align="center">
+  <img width="250" height="250" src="https://github.com/AliYoussef96/PEAA/blob/main/logos/paealogo.png">
+</p>
 
-<img align="right" width="250" height="250" src="https://github.com/AliYoussef96/PEAA/blob/main/logos/paealogo.png">
 
 **If you find PAEA useful, please cite our paper:**
 
