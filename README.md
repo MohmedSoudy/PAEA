@@ -3,7 +3,11 @@
 
 <img align="right" width="250" height="250" src="https://github.com/AliYoussef96/PEAA/blob/main/logos/paealogo.png">
 
-# Description
+## Description
+
+PAEA (Pathway Association Enrichment Analysis), is a new method for metabolomics pathway enrichment analysis using a novel association algorithm to increase the initial input list with significant associates metabolites (compounds), to give a bigger picture on possible activated pathways. In this version KEGG (Kyoto Encyclopedia of Genes and Genomes) is used as background database. For Enrishment and association analysis. All the species available on KEGG can be used by the user.
+
+For more information about the PAEA implementation and how the algorithm work, please take a look on the original [manuscript]() publish at journal [journal name().
 
 ## Availability and Installation 
 
