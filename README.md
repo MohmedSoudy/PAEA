@@ -36,6 +36,8 @@ dependencies.pkg.cran <- c("shiny", "shinycustomloader", "shinyFiles", "rhandson
 if (!requireNamespace("devtools", quietly = TRUE))
   install.packages("devtools")
 
+installed.packages(dependencies.pkg.cran)
+
 devtools::install_github('wleepang/shiny-directory-input')
 
 
