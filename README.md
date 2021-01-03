@@ -27,7 +27,16 @@ To use PAEA 1.0.0, first install all package dependencies. Ensure that you have 
 
 ```R
 
+dependencies.pkg.cran <- c("shiny", "shinycustomloader", "shinyFiles", "rhandsontable", "shinythemes", "shinyjs", "ggplot2" , 
+                           "dplyr", "ggnewscale", "data.table", "qdapRegex", "VennDiagram" , "reshape2", "igraph",
+                           "networkD3", "htmlwidgets", "stringr")
 
+
+
+if (!requireNamespace("devtools", quietly = TRUE))
+  install.packages("devtools")
+
+devtools::install_github('wleepang/shiny-directory-input')
 
 
 ```
