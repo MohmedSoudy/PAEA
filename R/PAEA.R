@@ -48,7 +48,7 @@ source("get.enzyme.reaction.r")
 source("sankey.cpd.plot.r")
 
 
-run.shiny.peaa <- function(){
+run.shiny.paea <- function(){
   app = shinyApp(
 
 ui = fluidPage(
@@ -116,9 +116,9 @@ ui = fluidPage(
 
 
                                conditionalPanel(condition = "input.inTabset == 'welcome'",
-                                                img(src = "https://raw.githubusercontent.com/AliYoussef96/PEAA/main/logos/6694ed35-236c-4b9b-859e-726973fc4a73_200x200.png?token=AKDJST25Q6TQP5KIXBFCEJS74RDKA" ,
+                                                img(src = "https://github.com/AliYoussef96/PAEA/blob/main/logos/paealogo.png" ,
                                                                                               align = "center", style="width:200px;height:200px; margin-top:0.5em; block; margin-left: auto; margin-right: auto"),
-                                                actionButton("welcome_start", "Start PEAA",
+                                                actionButton("welcome_start", "Start PAEA",
                                                              style='padding:10px; font-size:150%; margin-top:0.5em',
                                                              width = 200, icon = icon("door-open"))
                                                 ),
@@ -184,20 +184,20 @@ ui = fluidPage(
                   ) ,
 
                   mainPanel(
-                    img(src = "https://raw.githubusercontent.com/AliYoussef96/PEAA/main/logos/IM1.png?token=AKDJST5O7DYJUC4DIHOHIK274RA4U" , align = "right", style="width:150px"),
-                    img(src = "https://raw.githubusercontent.com/AliYoussef96/PEAA/main/logos/IM3.png?token=AKDJST65K2HOFNK5SBEX3UK74RA7C" , align = "right", style="width:100px"),
+                    img(src = "https://raw.githubusercontent.com/AliYoussef96/PAEA/main/logos/IM1.png?token=AKDJST5O7DYJUC4DIHOHIK274RA4U" , align = "right", style="width:150px"),
+                    img(src = "https://raw.githubusercontent.com/AliYoussef96/PAEA/main/logos/IM3.png?token=AKDJST65K2HOFNK5SBEX3UK74RA7C" , align = "right", style="width:100px"),
 
-                    img(src = "https://raw.githubusercontent.com/AliYoussef96/PEAA/main/logos/IM2.png?token=AKDJSTZLOP2U2XIDB5U65KK74RA62" , align = "right", style="width:100px"),
-                    img(src = "https://raw.githubusercontent.com/AliYoussef96/PEAA/main/logos/IM4.png?token=AKDJST4QLYJJLZ2NUPQSBI274RA7I" , align = "right", style="width:80px"),
+                    img(src = "https://raw.githubusercontent.com/AliYoussef96/PAEA/main/logos/IM2.png?token=AKDJSTZLOP2U2XIDB5U65KK74RA62" , align = "right", style="width:100px"),
+                    img(src = "https://raw.githubusercontent.com/AliYoussef96/PAEA/main/logos/IM4.png?token=AKDJST4QLYJJLZ2NUPQSBI274RA7I" , align = "right", style="width:80px"),
 
 
                     tabsetPanel(id = "inTabset",
 
 
 
-                                tabPanel("Welcome To PEAA",
+                                tabPanel("Welcome To PAEA",
                                          value = "welcome",
-                                         h1("Welcome to PEAA (Pathway Enrichment Association Analysis)"),
+                                         h1("Welcome to PAEA (Pathway Association Enrichment Analysis)"),
                                          h2("Please Cite: ")),
 
                                 tabPanel("Input Summary", withLoader(dataTableOutput("Input_Summary_Table"),
@@ -829,5 +829,3 @@ observe({
 )
   runApp(app)
 }
-run.shiny.peaa()
-#shinyApp(ui = ui, server = server)
