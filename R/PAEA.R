@@ -16,8 +16,6 @@ library(reshape2)
 library(igraph)
 library(networkD3)
 library(htmlwidgets)
-#github
-library(shinyDirectoryInput)
 #base
 library(stats)
 library(parallel)
@@ -39,6 +37,7 @@ source("relatedpathway.disease.r")
 source("plot.network.r")
 source("get.enzyme.reaction.r")
 source("sankey.cpd.plot.r")
+source("directoryInput.r")
 
 
 run.shiny.paea <- function(){
