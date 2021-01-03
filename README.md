@@ -23,15 +23,13 @@ For more information about the PAEA implementation and how the algorithm work, p
 
 #### Step 1. Install package dependencies 
 
+To use PAEA 1.0.0, first install all package dependencies. Ensure that you have necessary system environment configured. R base with version > 3.6.1 is recommended.
 
 ```R
-# First, Install the package using devtools package
-library(devtools)
-install_github("AliYoussef96/PAEA")
 
-# Second, Just run the PAEA Shiny app.
-library("PAEA")
-run.shiny.paea()
+
+
+
 ```
 
 **See the Full Documentation for all the [details]() ; how to use the PAEA Shiny app. and how to save the results.**
