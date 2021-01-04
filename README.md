@@ -28,7 +28,7 @@ To use PAEA 1.0.0, first install all package dependencies. Ensure that you have 
 ```R
 dependencies.pkg.cran <- c("shiny", "shinycustomloader", "shinyFiles", "rhandsontable", "shinythemes", "shinyjs", "ggplot2" , 
                            "dplyr", "ggnewscale", "data.table", "qdapRegex", "VennDiagram" , "reshape2", "igraph",
-                           "networkD3", "htmlwidgets", "stringr")
+                           "networkD3", "htmlwidgets", "stringr", "ggraph")
 
 install.packages(dependencies.pkg.cran)
 
