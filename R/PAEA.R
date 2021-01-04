@@ -19,6 +19,7 @@ library(htmlwidgets)
 #base
 library(stats)
 library(parallel)
+library(markdown)
 
 
 source("Get.Pathway.org.r")
@@ -189,8 +190,7 @@ run.shiny.paea <- function(){
 
                       tabPanel("Welcome To PAEA",
                                value = "welcome",
-                               h1("Welcome to PAEA (Pathway Association Enrichment Analysis)"),
-                               h2("Please Cite: ")),
+                               includeMarkdown("README.md")),
 
                       tabPanel("Input Summary", withLoader(dataTableOutput("Input_Summary_Table"),
                                                            type="html", loader="loader2"), value = "Input_Summary_Table"),
