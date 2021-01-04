@@ -1,4 +1,3 @@
-#Cran
 library(shiny)
 library(shinycustomloader)
 library(shinyFiles)
@@ -6,40 +5,44 @@ library(rhandsontable)
 library(shinythemes)
 library(shinyjs)
 library(stringr)
+library(stats)
 library(ggplot2)
 library(dplyr)
 library(ggnewscale)
 library(data.table)
+library(parallel)
 library(qdapRegex)
 library(VennDiagram)
 library(reshape2)
+library(gridExtra)
 library(igraph)
 library(networkD3)
 library(htmlwidgets)
-#base
-library(stats)
-library(parallel)
 library(markdown)
-
+library(ggraph)
 
 source("Get.Pathway.org.r")
 source("Get.cpd.fast.r")
 source("Get.cpd.r")
+
 source("Run.PEA.r")
 source("Fold.Enrich.r")
 source("plot.PEA.r")
+
 source("fisher.test.r")
 source("Run.fisher.r")
+
 source("Get.associate1.1.r")
 source("Do.associate.r")
+
 source("overlap.analysis.r")
 source("pathway.comp.shared.r")
+
 source("relatedpathway.disease.r")
 source("plot.network.r")
 source("get.enzyme.reaction.r")
 source("sankey.cpd.plot.r")
 source("directoryInput.r")
-
 
 run.shiny.paea <- function(){
   app = shinyApp(
@@ -190,7 +193,10 @@ run.shiny.paea <- function(){
 
                       tabPanel("Welcome To PAEA",
                                value = "welcome",
-                               includeMarkdown("../README.md")),
+
+                               #includeMarkdown("../README.md"),
+
+                               ),
 
                       tabPanel("Input Summary", withLoader(dataTableOutput("Input_Summary_Table"),
                                                            type="html", loader="loader2"), value = "Input_Summary_Table"),
@@ -678,10 +684,11 @@ run.shiny.paea <- function(){
 
       observe({
         if(input$download_session[1] > 0){
+          
           shinyjs::enable("save_now")
           #shinyjs::enable("folder_action")
 
-          project_folder <<- choose.dir()
+          project_folder <<- utils::choose.dir()
 
           observeEvent(input$download_session,{
 

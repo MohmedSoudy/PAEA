@@ -4,7 +4,7 @@ sanky.cpd.plot <- function(pathway.sig, org.df, top.n , cpd.atleast ){
     
     pathway.sig.top <- pathway.sig
   }else{
-    pathway.sig.top <- top_n(x = pathway.sig,n = -nrow(pathway.sig),
+    pathway.sig.top <- top_n(x = pathway.sig, n = -top.n,
                                 wt =p_adj )
   }
   
