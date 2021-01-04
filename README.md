@@ -30,7 +30,7 @@ dependencies.pkg.cran <- c("shiny", "shinycustomloader", "shinyFiles", "rhandson
                            "dplyr", "ggnewscale", "data.table", "qdapRegex", "VennDiagram" , "reshape2", "igraph",
                            "networkD3", "htmlwidgets", "stringr")
 
-devtools::install_github('wleepang/shiny-directory-input')
+install.packages(dependencies.pkg.cran)
 
 ```
 #### Step 2. 
