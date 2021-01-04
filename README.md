@@ -35,11 +35,33 @@ devtools::install_github('wleepang/shiny-directory-input')
 ```
 #### Step 2. 
 
+2.1. Download the zip file of this repository 
+
+![](https://github.com/AliYoussef96/PAEA/blob/main/for_installation/1.jpg)
+
+2.2. Extract the zip file in your computer at any directory
+
+![](https://github.com/AliYoussef96/PAEA/blob/main/for_installation/2.jpg)
+
+2.3 Locate the folder named R 
+
+![](https://github.com/AliYoussef96/PAEA/blob/main/for_installation/3.jpg)
+
+2.4. Open the R file named PAEA.r
+
+![](https://github.com/AliYoussef96/PAEA/blob/main/for_installation/4.jpg)
+
+2.5. Run the whole script by pressing Ctrl+A to select all the script lines, and then press run (or press Ctrl+Enter)
+
+![](https://github.com/AliYoussef96/PAEA/blob/main/for_installation/5.jpg)
+
+**The PAEA Shiny app should run locally, if everything is fine**
+
 **See the Full Documentation for all the [details]() ; how to use the PAEA Shiny app. and how to save the results.**
 
 ### 2-	Online version as a Shiny app.
 
-PAEA can also run online at; 
+**PAEA can also run online at**
 
 ## Package information
 
