@@ -1,7 +1,7 @@
 # PAEA (Pathway Association Enrichment Analysis)
 
 <p align="center">
-  <img width="250" height="250" src="https://github.com/AliYoussef96/PEAA/blob/main/logos/paealogo.png">
+  <img width="250" height="250" src="https://raw.githubusercontent.com/AliYoussef96/PAEA/main/logos/paealogo.png">
 </p>
 
 
@@ -37,23 +37,23 @@ install.packages(dependencies.pkg.cran)
 
 2.1. Download the zip file of this repository 
 
-![](https://github.com/AliYoussef96/PAEA/blob/main/for_installation/1.jpg)
+![](https://raw.githubusercontent.com/AliYoussef96/PAEA/main/for_installation/1.jpg)
 
 2.2. Extract the zip file in your computer at any directory
 
-![](https://github.com/AliYoussef96/PAEA/blob/main/for_installation/2.jpg)
+![](https://raw.githubusercontent.com/AliYoussef96/PAEA/main/for_installation/2.jpg)
 
 2.3 Locate the folder named R 
 
-![](https://github.com/AliYoussef96/PAEA/blob/main/for_installation/3.jpg)
+![](https://raw.githubusercontent.com/AliYoussef96/PAEA/main/for_installation/3.jpg)
 
 2.4. Open the R file named PAEA.r
 
-![](https://github.com/AliYoussef96/PAEA/blob/main/for_installation/4.jpg)
+![](https://raw.githubusercontent.com/AliYoussef96/PAEA/main/for_installation/4.jpg)
 
 2.5. Run the whole script by pressing Ctrl+A to select all the script lines, and then press run (or press Ctrl+Enter)
 
-![](https://github.com/AliYoussef96/PAEA/blob/main/for_installation/5.jpg)
+![](https://raw.githubusercontent.com/AliYoussef96/PAEA/main/for_installation/5.jpg)
 
 **The PAEA Shiny app should run locally, if everything is fine**
 
