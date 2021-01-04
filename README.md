@@ -8,20 +8,20 @@
 **If you find PAEA useful, please cite our paper:**
 
 
-## Description
+# Description
 
 PAEA (Pathway Association Enrichment Analysis), is a new method for metabolomics pathway enrichment analysis using a novel association algorithm to increase the initial input list with significant associates metabolites (compounds), to give a bigger picture on possible activated pathways. In this version KEGG (Kyoto Encyclopedia of Genes and Genomes) is used as background database, for enrishment and association analysis. All the species available on KEGG can be used by the user.
 
 For more information about the PAEA implementation and how the algorithm work, please take a look on the original [manuscript]() publish at [journal name]().
 
-## Availability and Installation 
+# Availability and Installation 
 
 
 **PAEA is available in two forms on R;**
 
-### 1- Offline verision as a Shiny app.
+## 1- Offline verision as a Shiny app.
 
-#### Step 1. Install package dependencies 
+### Step 1. Install package dependencies 
 
 To use PAEA 1.0.0, first install all package dependencies. Ensure that you have necessary system environment configured. R base with version > 3.6.1 is recommended.
 
@@ -33,7 +33,7 @@ dependencies.pkg.cran <- c("shiny", "shinycustomloader", "shinyFiles", "rhandson
 install.packages(dependencies.pkg.cran)
 
 ```
-#### Step 2. 
+### Step 2. 
 
 2.1. Download the zip file of this repository 
 
@@ -59,11 +59,11 @@ install.packages(dependencies.pkg.cran)
 
 **See the Full Documentation for all the [details]() ; how to use the PAEA Shiny app. and how to save the results.**
 
-### 2-	Online version as a Shiny app.
+## 2-	Online version as a Shiny app.
 
 **PAEA can also run online at**
 
-## Package information
+# Package information
 
 - Version: **v1.0.0**
 - License: GPL-3
