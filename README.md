@@ -1,4 +1,4 @@
-# PAEA
+# PAEA (Pathway Association Enrichment Analysis)
 
 <p align="center">
   <img width="250" height="250" src="https://github.com/AliYoussef96/PEAA/blob/main/logos/paealogo.png">
