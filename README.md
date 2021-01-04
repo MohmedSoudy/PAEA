@@ -1,7 +1,7 @@
 # PAEA (Pathway Association Enrichment Analysis)
 
 <p align="center">
-  <img width="250" height="250" src="https://raw.githubusercontent.com/AliYoussef96/PAEA/main/logos/paealogo.png">
+  <img width="250" height="250" src="https://raw.githubusercontent.com/AliYoussef96/PAEA/main/logos/paealogo.png?token=AKDJST5STPRLIK7YZMYXY2S76L654">
 </p>
 
 
