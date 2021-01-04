@@ -190,7 +190,7 @@ run.shiny.paea <- function(){
 
                       tabPanel("Welcome To PAEA",
                                value = "welcome",
-                               includeMarkdown("README.md")),
+                               includeMarkdown("../README.md")),
 
                       tabPanel("Input Summary", withLoader(dataTableOutput("Input_Summary_Table"),
                                                            type="html", loader="loader2"), value = "Input_Summary_Table"),
