@@ -17,14 +17,13 @@ Get.cpd <- function(pathway.df){
       #get cPD for each pathway
       
       cpd.get <- str_extract_all(cpd.read$V1, "(cpd:C[0-9]+)")
+      cpd.get <- unlist(cpd.get)
       
-      cpd.join <- paste0(cpd.get[[1]], collapse = ";")
+      cpd.join <- paste0(cpd.get, collapse = ";")
       cpd.join <- str_remove_all(cpd.join , fixed("NA"))
       cpd.join <- str_remove_all(cpd.join , fixed("NA;"))
       
       cpd.join <- str_remove_all(cpd.join, "cpd:")
-      
-      
       
       
       ### merge 

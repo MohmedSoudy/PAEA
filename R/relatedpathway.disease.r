@@ -24,16 +24,19 @@ get.info.relatedpathway.disease <- function(sig.map, org.df){
     
     extract.related.pathway <- paste0(extract.related.pathway, collapse = ";")
   }else{
-    extract.related.pathway <- ""
+    extract.related.pathway <- "*"
   }
   
   ## get Disease  
-  
+    if (any(grepl("<nobr>Disease</nobr>",info.url[,1], fixed = T))){
+      
   disease.get <- unlist(str_extract_all(info.url$V1, "(H[0-9]+)"))
   disease.get <- unique(disease.get)
   disease.get <- paste0(disease.get, collapse = ";")
     
-  
+    }else{
+      disease.get <- "*"
+    }
   ## collect
   
   df.temp <- data.frame(IDs_map = i_pathway , related.pathways = extract.related.pathway, disease = disease.get)
@@ -42,6 +45,7 @@ get.info.relatedpathway.disease <- function(sig.map, org.df){
   }
   
   df.all.info <- merge(org.df.pathways.names, df.all.info , by = "IDs_map")
+  
   return(df.all.info)
 }
 
@@ -87,6 +91,5 @@ plot.disease.bar <- function(related.disease.info){
   return(disease.related.plot)
   
 } 
-
 
 

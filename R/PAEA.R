@@ -43,6 +43,8 @@ source("plot.network.r")
 source("get.enzyme.reaction.r")
 source("sankey.cpd.plot.r")
 source("directoryInput.r")
+source("arc.plot.r")
+
 
 run.shiny.paea <- function(){
   app = shinyApp(
@@ -126,7 +128,9 @@ run.shiny.paea <- function(){
 
                                       # checkboxInput("enzymes", label = "Get Related Enzymes", value = FALSE),
                                       # checkboxInput("reaction", label = "Get Related Eeactions", value = FALSE),
-
+                                      
+                                      sliderInput("top.n.2", "Top N Pathways (P-adj.) for the arc plot", 1, 50, 1, value = 5),
+                                      
                                       actionButton("additionalanalysis_start1", "Start",
                                                    style='padding:10px; font-size:100%; margin-top:0.5em', width = 200, icon = icon("tasks")),
 
@@ -136,7 +140,9 @@ run.shiny.paea <- function(){
                                                      "Comparative analysis for the P-values" = "pvalues",
                                                      "Comparative analysis for the Fold-values" = "foldvalues",
                                                      "Related Diseases" = "diseasescheckbox",
-                                                     "Related Pathways" = "pathwayscheckbox")
+                                                     "Related Pathways" = "pathwayscheckbox",
+                                                     "Related Diseases Arc Plot" = "diseasesarcplot",
+                                                     "Related Pathways Arc Plot" = "pathwaysarcplot")
                                       ),
 
 
@@ -152,13 +158,13 @@ run.shiny.paea <- function(){
 
                                       sliderInput("charger", "The strength of the node repulsion", -1000, 0, -50, value = -100),
 
-                                      sliderInput("linkDistance", "The distance between the links in pixels", 0, 100, 10, value = 20),
+                                      sliderInput("linkDistance", "The distance between the links in pixels", 1, 100, 10, value = 20),
 
-                                      h2("Parameters For The Sankey Plot"),
+                                      sliderInput("toppathway", "Top N Pathways (P-adj.)", 2, 50, 1, value = 5),
+                                      
+                                      #h2("Parameters For The Sankey Plot"),
 
-                                      sliderInput("toppathway", "Top N Pathways (P-adj.)", 0, 50, 1, value = 5),
-
-                                      sliderInput("atleastcpd", "The number of pathways the CPD should have a role in;", 0, 10, 1, value = 1),
+                                      sliderInput("atleastcpd", "The number of pathways the CPD should have a role in;", 2, 10, 1, value = 2),
 
                                       actionButton("additionalanalysis_start2", "Start",
                                                    style='padding:10px; font-size:100%; margin-top:0.5em', width = 200, icon = icon("tasks")),
@@ -281,7 +287,8 @@ run.shiny.paea <- function(){
                    "charger",
                    "linkDistance",
                    "toppathway",
-                   "atleastcpd"),
+                   "atleastcpd",
+                   "top.n.2"),
 
           Value = as.numeric(c(input$adj_p_en,
                                input$p_as,
@@ -292,7 +299,8 @@ run.shiny.paea <- function(){
                                input$charger,
                                input$linkDistance,
                                input$toppathway,
-                               input$atleastcpd)),
+                               input$atleastcpd,
+                               input$top.n.2)),
 
           stringsAsFactors = FALSE)
 
@@ -311,7 +319,7 @@ run.shiny.paea <- function(){
       ## org IDs input
 
       pathways.df <- NULL
-      pathway.information.found <- NULL
+      #pathway.information.found <- NULL
 
       observe({
         if(input$org_id != ""){
@@ -328,10 +336,7 @@ run.shiny.paea <- function(){
 
               pathways.df })
 
-            shinyjs::disable("org_id")
-            shinyjs::disable("species_cpd")
-
-            pathway.information.found <<- "NO"
+            #pathway.information.found <<- "NO"
           }}
 
       })
@@ -351,16 +356,16 @@ run.shiny.paea <- function(){
             )})
 
           pathway.cpd.kegg <<- read.csv(input$species_cpd$datapath)
-
+          
+          pathway.cpd.kegg <<- merge(pathway.cpd.kegg,pathways.df, by = "IDs_map" )
+          
           output$Retrieved_cpd_Table <- renderDataTable({
 
 
             pathway.cpd.kegg})
 
-          shinyjs::disable("org_id")
-          shinyjs::disable("species_cpd")
 
-          pathway.information.found <<- "Yes"
+          #pathway.information.found <<- "Yes"
         }
 
       })
@@ -373,12 +378,8 @@ run.shiny.paea <- function(){
           shinyjs::enable("Run_en")
 
 
-          if(is.null(pathway.cpd.kegg)){
-            showModal(modalDialog("Retrieving The CPD Information", footer=NULL))
-
-
-            pathway.cpd.kegg <<- Get.cpd.fast(pathways.df)
-            pathway.cpd.kegg <<- pathway.cpd.kegg[!pathway.cpd.kegg$cpd == "",]
+            #pathway.cpd.kegg <<- Get.cpd.fast(pathways.df)
+            #pathway.cpd.kegg <<- pathway.cpd.kegg[!pathway.cpd.kegg$cpd == "",]
 
 
             input.cpd.user <<- read.csv(input$upload_cpd$datapath, header= F)
@@ -397,10 +398,6 @@ run.shiny.paea <- function(){
               pathway.cpd.kegg})
 
 
-          }else{
-            input.cpd.user <<- read.csv(input$upload_cpd$datapath, header= F)
-            input.cpd.user <<- as.character(input.cpd.user[,c(1)])
-          }
         }
       })
 
@@ -410,7 +407,7 @@ run.shiny.paea <- function(){
       observe({
 
         if( input$Run_en[1] > 0){
-
+          print(head(pathway.cpd.kegg))
           showModal(modalDialog("Runing Enrichment Analysis...", footer=NULL))
 
           observeEvent(input$Run_en,{
@@ -503,8 +500,9 @@ run.shiny.paea <- function(){
       foldvalues.plot <- NULL
       pathway.related.plot <- NULL
       disease.related.plot <- NULL
-
-
+      disease.related.arc <- NULL
+      pathway.related.arc <- NULL
+      
       association.map.sig <- NULL
       related.pathways.disease <- NULL
       # enzymes.related <- NULL
@@ -521,14 +519,23 @@ run.shiny.paea <- function(){
           pvalues.plot <<- pathway.comp.shared.pvalue( enr.result =  PEA.normal.result, ass.result =  PEA.association.result, org.data =  pathway.cpd.kegg)
           foldvalues.plot <<- pathway.comp.shared.fold( enr.result =  PEA.normal.result, ass.result =  PEA.association.result, org.data =  pathway.cpd.kegg)
 
-
+          
+          
           association.map.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]$KEGG_PATHWAY_ID
-
+          
+          if (is.null(related.pathways.disease)){
           related.pathways.disease <<- get.info.relatedpathway.disease(association.map.sig, pathway.cpd.kegg)
-
+          }
           pathway.related.plot <<- plot.pathway.related.bar(related.pathways.disease)
           disease.related.plot <<- plot.disease.bar(related.pathways.disease)
+          
+          pathway.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]
+          
 
+          disease.related.arc <<- arc.disease.plot(related.info = related.pathways.disease, pathway.sig = pathway.sig, top.n = input$top.n.2 )
+          pathway.related.arc <<- arc.pathways.plot(related.info = related.pathways.disease, pathway.sig = pathway.sig, top.n = input$top.n.2)
+          
+          
           # if(input$enzymes == TRUE){
           #
           #   pathway.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]
@@ -571,11 +578,23 @@ run.shiny.paea <- function(){
 
             output$additionalanalysisplots1 <- renderPlot({ disease.related.plot },height = 800, width = 1200)
           }
+          
+          if(input$add_on_plots1 == "diseasesarcplot"){
+            
+            output$additionalanalysisplots1 <- renderPlot({ disease.related.arc },height = 800, width = 1200)
+          }
 
           if(input$add_on_plots1 == "pathwayscheckbox"){
 
             output$additionalanalysisplots1 <- renderPlot({ pathway.related.plot },height = 800, width = 1200)
           }
+          
+          if(input$add_on_plots1 == "pathwaysarcplot"){
+            
+            output$additionalanalysisplots1 <- renderPlot({ pathway.related.arc },height = 800, width = 1200)
+          }
+          
+          
 
 
         }
@@ -597,8 +616,11 @@ run.shiny.paea <- function(){
 
           if(input$add_on_plots2 == "networkdiseasescheckbox"){
             if(!is.null(related.pathways.disease)){
-
-              disease.network.plot <<- plot.network.disease(related.pathways.disease, charge = input$charger, linkDistance = input$linkDistance)
+              pathway.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]
+              
+              disease.network.plot <<- plot.network.disease(related.info = related.pathways.disease, pathway.sig = pathway.sig,
+                                                            top.n =  input$toppathway,
+                                                            charge = input$charger, linkDistance = input$linkDistance)
 
               output$additionalanalysisplots2 <- renderForceNetwork( disease.network.plot )
             }}
@@ -606,8 +628,11 @@ run.shiny.paea <- function(){
 
           if(input$add_on_plots2 == "networkpathwayscheckbox"){
             if(!is.null(related.pathways.disease) ){
-
-              pathway.network.plot <<- plot.network.pathway(related.pathways.disease, charge = input$charger, linkDistance = input$linkDistance)
+              pathway.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]
+              
+              pathway.network.plot <<- plot.network.pathway(related.info =  related.pathways.disease, pathway.sig = pathway.sig,
+                                                            top.n =  input$toppathway,
+                                                            charge = input$charger, linkDistance = input$linkDistance)
 
               output$additionalanalysisplots2 <- renderForceNetwork( pathway.network.plot )
             }}
@@ -726,7 +751,9 @@ run.shiny.paea <- function(){
 
       observe({
         if(input$save_now[1] > 0){
+          
 
+          
           showModal(modalDialog("Saving...", footer=NULL))
 
           save.result.path <- project_folder
@@ -788,16 +815,29 @@ run.shiny.paea <- function(){
                    dpi = input$dpi, width = input$width,
                    height = input$height, limitsize = FALSE)
           }
-
+          
+          if(!is.null(disease.related.arc)){
+            ggsave(filename = paste0(save.result.path, "/" ,
+                                     input$save_result_by, "_Related Diseases arc.tiff"), plot = disease.related.arc ,
+                   dpi = input$dpi, width = input$width,
+                   height = input$height, limitsize = FALSE)
+          }
+          
+          if(!is.null(pathway.related.arc)){
+            ggsave(filename = paste0(save.result.path, "/" ,
+                                     input$save_result_by, "_Related Pathways arc.tiff"), plot = pathway.related.arc ,
+                   dpi = input$dpi, width = input$width,
+                   height = input$height, limitsize = FALSE)
+          }
 
           #### csv
           write.csv(PEA.normal.result, paste0(save.result.path, "/" , input$save_result_by, "_Enrichmentplot.csv"))
 
           write.csv(PEA.association.result, paste0(save.result.path, "/" , input$save_result_by, "_Associationplot.csv"))
 
-          if (pathway.information.found == "No"){
-            write.csv(pathway.cpd.kegg , paste0(save.result.path, "/" , input$save_result_by, "_Host_info.csv") )
-          }
+          # if (pathway.information.found == "No"){
+          #   write.csv(pathway.cpd.kegg , paste0(save.result.path, "/" , input$save_result_by, "_Host_info.csv") )
+          # }
 
 
 
@@ -820,6 +860,7 @@ run.shiny.paea <- function(){
           # }
 
           removeModal()
+
 
         }
       })

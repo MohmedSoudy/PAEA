@@ -1,4 +1,19 @@
-plot.network.pathway <- function(related.info, charge, linkDistance){
+plot.network.pathway <- function(related.info, pathway.sig , top.n ,charge, linkDistance){
+  
+  
+  related.info <- related.info[!related.info$related.pathways == "*",]
+  
+  pathway.sig <- pathway.sig[pathway.sig$KEGG_PATHWAY_ID %in% related.info$IDs_map,]
+  
+  if (top.n > nrow(pathway.sig)){
+    
+    pathway.sig.top <- pathway.sig
+  }else{
+    pathway.sig.top <- top_n(x = pathway.sig, n = -top.n,
+                             wt =p_adj )
+  }
+  
+  related.info <- related.info[related.info$IDs_map %in% pathway.sig.top$KEGG_PATHWAY_ID,]
   
   network.df <- NULL
   
@@ -62,7 +77,23 @@ plot.network.pathway <- function(related.info, charge, linkDistance){
 }
 
 
-plot.network.disease <- function(related.info, charge, linkDistance){
+plot.network.disease <- function(related.info, pathway.sig , top.n ,charge, linkDistance){
+  
+  
+  related.info <- related.info[!related.info$disease == "*",]
+  
+  pathway.sig <- pathway.sig[pathway.sig$KEGG_PATHWAY_ID %in% related.info$IDs_map,]
+  
+  if (top.n > nrow(pathway.sig)){
+    
+    pathway.sig.top <- pathway.sig
+  }else{
+    pathway.sig.top <- top_n(x = pathway.sig, n = -top.n,
+                             wt =p_adj )
+  }
+  
+  related.info <- related.info[related.info$IDs_map %in% pathway.sig.top$KEGG_PATHWAY_ID,]
+  
   
   network.df <- NULL
   

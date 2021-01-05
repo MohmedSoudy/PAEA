@@ -23,7 +23,10 @@ Get.Pathway.org <- function(org.id){
   #org.name$V1
   
   pathway.df$org_acc_ids <- org.id
-    
+  
+  pathway.df$Name <- data.frame(str_split_fixed(pathway.df$Name , fixed(" - "), n = 2))$X1
+  
+
   return(pathway.df)
   
 }
