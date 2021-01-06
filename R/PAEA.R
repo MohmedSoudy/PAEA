@@ -63,7 +63,7 @@ run.shiny.paea <- function(){
                                       textInput("org_id","Enter the Species KEGG ID:",placeholder = "e,g. 'hsa' for human"),
                                       actionButton("IDs_Guide", "Open Species IDs Guide", style='padding:10px; font-size:100%', width = 200, icon = icon("file-pdf")),
 
-                                      h3("OR"),
+                                      h3(""),
                                       fileInput("species_cpd", "Enter the Species KEGG CPD", multiple=FALSE, accept=c(".txt",".csv"),),
 
 
