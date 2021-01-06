@@ -124,7 +124,7 @@ run.shiny.paea <- function(){
 
                      conditionalPanel(condition = "input.inTabset == 'additionalanalysis1' ",
 
-                                      h1("Additional Analysis 1 (It may take long time)"),
+                                      h1("Additional Analysis 1 (This may take a few minutes to complete)"),
 
                                       # checkboxInput("enzymes", label = "Get Related Enzymes", value = FALSE),
                                       # checkboxInput("reaction", label = "Get Related Eeactions", value = FALSE),
@@ -152,7 +152,7 @@ run.shiny.paea <- function(){
 
                      conditionalPanel(condition = "input.inTabset == 'additionalanalysis2' ",
 
-                                      h1("Additional Analysis 2 (It may take long time)"),
+                                      h1("Additional Analysis 2 (This may take a few minutes to complete)"),
 
                                       h2("Parameters For The Network Plots"),
 
