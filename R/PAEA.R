@@ -240,6 +240,7 @@ run.shiny.paea <- function(){
 
 
                       tabPanel("Save Results",
+                               uiOutput("donegif"),
                                value = "save_sesults")
 
           )
@@ -259,7 +260,7 @@ run.shiny.paea <- function(){
       shinyjs::disable("Run_en")
       shinyjs::disable("additionalanalysis_start1")
       shinyjs::disable("additionalanalysis_start2")
-
+      shinyjs::disable("species_cpd")
 
 
       #welcome tab
@@ -337,6 +338,8 @@ run.shiny.paea <- function(){
               pathways.df })
 
             #pathway.information.found <<- "NO"
+            shinyjs::enable("species_cpd")
+            
           }}
 
       })
@@ -407,7 +410,6 @@ run.shiny.paea <- function(){
       observe({
 
         if( input$Run_en[1] > 0){
-          print(head(pathway.cpd.kegg))
           showModal(modalDialog("Runing Enrichment Analysis...", footer=NULL))
 
           observeEvent(input$Run_en,{
@@ -496,7 +498,7 @@ run.shiny.paea <- function(){
 
       CPDs.plot <- NULL
       pathways.plot <- NULL
-      foldvalues.plot <- NULL
+      pvalues.plot <- NULL
       foldvalues.plot <- NULL
       pathway.related.plot <- NULL
       disease.related.plot <- NULL
@@ -752,7 +754,6 @@ run.shiny.paea <- function(){
       observe({
         if(input$save_now[1] > 0){
           
-
           
           showModal(modalDialog("Saving...", footer=NULL))
 
@@ -760,37 +761,53 @@ run.shiny.paea <- function(){
 
 
           ## plots
+          
+          if(!is.null(PEA.normal.result.plot)){
 
           ggsave(filename = paste0(save.result.path, "/" , input$save_result_by, "_Enrichmentplot.tiff"), plot = PEA.normal.result.plot ,
                  dpi = input$dpi, width = input$width,
                  height = input$height, limitsize = FALSE)
+            
+          }
+          
+          if(!is.null(PEA.association.result.plot)){
+            
 
           ggsave(filename = paste0(save.result.path, "/" , input$save_result_by, "_Associationplot.tiff"), plot = PEA.association.result.plot ,
                  dpi = input$dpi, width = input$width,
                  height = input$height, limitsize = FALSE)
-
-
+          }
+          
+          
+          if(!is.null(CPDs.plot)){
+            
           ggsave(filename = paste0(save.result.path, "/" , input$save_result_by, "_Overlap analysis for the CPDs.tiff"), plot = CPDs.plot ,
                  dpi = input$dpi, width = input$width,
                  height = input$height, limitsize = FALSE)
 
-
-
+          }
+          
+          if(!is.null(pathways.plot)){
+            
           ggsave(filename = paste0(save.result.path, "/" , input$save_result_by, "_Overlap analysis for the pathways.tiff"), plot = pathways.plot ,
                  dpi = input$dpi, width = input$width,
                  height = input$height, limitsize = FALSE)
-
-
+          }
+          
+          if(!is.null(pvalues.plot)){
+            
           ggsave(filename = paste0(save.result.path, "/" , input$save_result_by, "_Comparative analysis for the P-values.tiff"), plot = pvalues.plot ,
                  dpi = input$dpi, width = input$width,
                  height = input$height, limitsize = FALSE)
-
-
+          }
+          
+          if(!is.null(foldvalues.plot)){
+            
           ggsave(filename = paste0(save.result.path, "/" , input$save_result_by, "_Comparative analysis for the Fold-values.tiff"), plot = foldvalues.plot ,
                  dpi = input$dpi, width = input$width,
                  height = input$height, limitsize = FALSE)
-
-
+          }
+          
           if(!is.null(pathway.network.plot)){
             saveWidget(pathway.network.plot, paste0(save.result.path, "/" , input$save_result_by, "_PathWayNetwork.html"))
           }
@@ -831,10 +848,15 @@ run.shiny.paea <- function(){
           }
 
           #### csv
+          
+          if(!is.null(PEA.normal.result)){
           write.csv(PEA.normal.result, paste0(save.result.path, "/" , input$save_result_by, "_Enrichmentplot.csv"))
-
+          }
+          
+          if(!is.null(PEA.association.result)){
+            
           write.csv(PEA.association.result, paste0(save.result.path, "/" , input$save_result_by, "_Associationplot.csv"))
-
+          }
           # if (pathway.information.found == "No"){
           #   write.csv(pathway.cpd.kegg , paste0(save.result.path, "/" , input$save_result_by, "_Host_info.csv") )
           # }
@@ -860,6 +882,11 @@ run.shiny.paea <- function(){
           # }
 
           removeModal()
+          
+          output$donegif <- renderUI({
+            img(src = "https://nebula.wsimg.com/2c3a52e9b322edb79a1ffa3ac027abbc?AccessKeyId=7AE6682F38D12A420D73&disposition=0&alloworigin=1",
+                height="50%", width="50%", align="center")
+          })
 
 
         }
