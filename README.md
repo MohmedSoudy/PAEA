@@ -25,10 +25,11 @@ For more information about the PAEA implementation and how the algorithm work, p
 
 To use PAEA 1.0.0, first install all package dependencies. Ensure that you have necessary system environment configured. R base with version > 3.6.1 is recommended.
 
+
 ```R
 dependencies.pkg.cran <- c("shiny", "shinycustomloader", "shinyFiles", "rhandsontable", "shinythemes", "shinyjs", "ggplot2" , 
                            "dplyr", "ggnewscale", "data.table", "qdapRegex", "VennDiagram" , "reshape2", "igraph",
-                           "networkD3", "htmlwidgets", "stringr", "ggraph")
+                           "networkD3", "htmlwidgets", "stringr", "ggraph", "shinyalert)
 
 install.packages(dependencies.pkg.cran)
 
