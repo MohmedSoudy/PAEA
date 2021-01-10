@@ -816,7 +816,7 @@ run.shiny.paea <- function(){
           }
 
           if(!is.null(snakey.plot)){
-            saveWidget(snakey.plot, paste0(save.result.path, "/" , input$save_result_by, "_CDPsSnaky.html"))
+            saveWidget(snakey.plot, paste0(save.result.path, "/" , input$save_result_by, "_CDPsSankey.html"))
           }
 
           if(!is.null(pathway.related.plot)){
