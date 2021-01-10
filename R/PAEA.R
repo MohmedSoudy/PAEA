@@ -152,7 +152,7 @@ run.shiny.paea <- function(){
 
                      conditionalPanel(condition = "input.inTabset == 'additionalanalysis2' ",
 
-                                      h1("Additional Analysis 2 (This may take a few minutes to complete)"),
+                                      h1("Additional Analysis 2"),
 
                                       h2("Parameters For The Network Plots"),
 
