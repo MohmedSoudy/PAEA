@@ -19,7 +19,7 @@ For more information about the PAEA implementation and how the algorithm work, p
 
 **PAEA is available in two forms on R;**
 
-## 1- Offline verision as a Shiny app.
+## 1- Offline version as a Shiny app.
 
 ### Step 1. Install package dependencies 
 
