@@ -200,7 +200,7 @@ run.shiny.paea <- function(){
                       tabPanel("Welcome To PAEA",
                                value = "welcome",
 
-                               #includeMarkdown("../README.md"),
+                               includeMarkdown("README.md"),
 
                                ),
 
