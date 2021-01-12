@@ -62,7 +62,7 @@ install.packages(dependencies.pkg.cran)
 
 ## 2-	Online version as a Shiny app.
 
-**PAEA can also run online at**
+**PAEA can also run online at [PAEA shiny app](https://proteomicslab57357.shinyapps.io/PAEA/)**
 
 # Documentation Availability
 
