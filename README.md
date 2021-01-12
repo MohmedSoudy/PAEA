@@ -64,6 +64,14 @@ install.packages(dependencies.pkg.cran)
 
 **PAEA can also run online at**
 
+# Documentation Availability
+
+For step by step documentation on how to use PAEA shiny app, follow this [link](https://github.com/AliYoussef96/PAEA/blob/main/Documentation.pdf).
+
+Also, a [tutorial video](https://drive.google.com/file/d/1OKhkrU4O7niL-UA25bD4dy4t1VU9UiBq/view) is available.
+
+
+
 # Package information
 
 - Version: **v1.0.0**
