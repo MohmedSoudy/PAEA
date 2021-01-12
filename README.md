@@ -66,9 +66,7 @@ install.packages(dependencies.pkg.cran)
 
 # Documentation Availability
 
-For step by step documentation on how to use PAEA shiny app, follow this [link](https://github.com/AliYoussef96/PAEA/blob/main/Documentation.pdf).
-
-Also, a [tutorial video](https://drive.google.com/file/d/1OKhkrU4O7niL-UA25bD4dy4t1VU9UiBq/view) is available.
+For step by step documentation on how to use PAEA shiny app, follow this [link](https://github.com/AliYoussef96/PAEA/blob/main/Documentation.pdf). Also, a [tutorial video](https://drive.google.com/file/d/1OKhkrU4O7niL-UA25bD4dy4t1VU9UiBq/view) is available.
 
 
 
