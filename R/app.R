@@ -29,7 +29,8 @@ library(networkD3)
 library(htmlwidgets)
 library(markdown)
 library(ggraph)
-
+library(curl)
+library(utils)
 source("Get.Pathway.org.r")
 source("Get.cpd.fast.r")
 source("Get.cpd.r")
@@ -89,10 +90,22 @@ ui = fluidPage(
                                       
                                       
                                       actionButton("Run_en", "enrichment analysis", style='padding:10px; font-size:100%; margin-top:0.5em', width = 200, icon = icon("spinner")),
-                                      actionButton("Run_as", "association analysis", style='padding:10px; font-size:100%; margin-top:0.5em', width = 200, icon = icon("spinner")),
-                                      actionButton("download_session", "Save The Result", style='padding:10px; font-size:100%; margin-top:0.5em', width = 200, icon = icon("save")),
-                                      actionButton("restart_session", "Restart The Session", class = "btn-success", style='padding:10px; font-size:100%; margin-top:0.5em', width = 200, icon = icon("refresh")),
                                       
+                                      actionButton("Run_as", "association analysis", style='padding:10px; font-size:100%; margin-top:0.5em', width = 200, icon = icon("spinner")),
+
+                                      actionButton("download_session_main", "Save The Result", style='padding:10px; font-size:100%; margin-top:0.5em', width = 200, icon = icon("save")),
+                                      
+                                      shinyDirButton('download_session', 'Save Result In',
+                                                     'Please select a folder',
+                                                     FALSE,
+                                                     style='padding:10px; width= 200; font-size:100%; margin-top:0.5em',
+                                                     width = 200, icon = icon("save"), class = "btn-success"),
+                                      
+                                      
+                                      
+                                      actionButton("restart_session", "Restart The Session", class = "btn-success", style='padding:10px; font-size:100%; margin-top:0.5em', 
+                                                   width = 200, icon = icon("refresh"))
+
                      ),
                      conditionalPanel(condition = "input.inTabset == 'save_sesults'",
                                       
@@ -259,7 +272,8 @@ server = function(input, output , session ) {
     options(shiny.maxRequestSize = 102400*1024^2)
     
     shinyjs::disable("Run_as")
-    shinyjs::disable("download_session")
+    shinyjs::hide("download_session")
+    shinyjs::disable("download_session_main")
     shinyjs::disable("save_now")
     #shinyjs::disable("folder_action")
     shinyjs::disable("Run_en")
@@ -491,7 +505,7 @@ server = function(input, output , session ) {
             
             
             removeModal()
-            shinyjs::enable("download_session")
+            shinyjs::enable("download_session_main")
             shinyjs::enable("additionalanalysis_start1")
             shinyjs::enable("additionalanalysis_start2")
             
@@ -533,16 +547,19 @@ server = function(input, output , session ) {
             if (is.null(related.pathways.disease)){
                 related.pathways.disease <<- get.info.relatedpathway.disease(association.map.sig, pathway.cpd.kegg)
             }
-            pathway.related.plot <<- plot.pathway.related.bar(related.pathways.disease)
-            disease.related.plot <<- plot.disease.bar(related.pathways.disease)
-            
-            pathway.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]
-            
-            
-            disease.related.arc <<- arc.disease.plot(related.info = related.pathways.disease, pathway.sig = pathway.sig, top.n = input$top.n.2 )
-            pathway.related.arc <<- arc.pathways.plot(related.info = related.pathways.disease, pathway.sig = pathway.sig, top.n = input$top.n.2)
-            
-            
+            if (!unique(related.pathways.disease$related.pathways) == "*"){
+              pathway.related.plot <<- plot.pathway.related.bar(related.pathways.disease)
+              disease.related.plot <<- plot.disease.bar(related.pathways.disease)
+              
+              pathway.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]
+              
+              
+              disease.related.arc <<- arc.disease.plot(related.info = related.pathways.disease, pathway.sig = pathway.sig, top.n = input$top.n.2 )
+              pathway.related.arc <<- arc.pathways.plot(related.info = related.pathways.disease, pathway.sig = pathway.sig, top.n = input$top.n.2)
+              
+              
+            }
+
             # if(input$enzymes == TRUE){
             #
             #   pathway.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]
@@ -622,6 +639,9 @@ server = function(input, output , session ) {
             
             
             if(input$add_on_plots2 == "networkdiseasescheckbox"){
+              
+              if (!unique(related.pathways.disease$related.pathways) == "*"){
+                
                 if(!is.null(related.pathways.disease)){
                     pathway.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]
                     
@@ -630,10 +650,13 @@ server = function(input, output , session ) {
                                                                   charge = input$charger, linkDistance = input$linkDistance)
                     
                     output$additionalanalysisplots2 <- renderForceNetwork( disease.network.plot )
-                }}
+                }
+              }
+            }
             
             
             if(input$add_on_plots2 == "networkpathwayscheckbox"){
+              if (!unique(related.pathways.disease$related.pathways) == "*"){
                 if(!is.null(related.pathways.disease) ){
                     pathway.sig <<- PEA.association.result[PEA.association.result$p_adj < input$adj_p_en,]
                     
@@ -643,8 +666,11 @@ server = function(input, output , session ) {
                     
                     output$additionalanalysisplots2 <- renderForceNetwork( pathway.network.plot )
                 }}
+            }
             
             if(input$add_on_plots2 == "sankeycpdplotcheckbox"){
+              if (!unique(related.pathways.disease$related.pathways) == "*"){
+                
                 if(!is.null(related.pathways.disease) ){
                     output$additionalanalysisplots2 <- renderForceNetwork( NULL )
                     
@@ -675,7 +701,9 @@ server = function(input, output , session ) {
                     
                 }
             }
+            }
         }
+        
         
     })
     #next
@@ -714,25 +742,44 @@ server = function(input, output , session ) {
     
     project_folder <- NULL
     
-    
-    observe({
-        if(input$download_session[1] > 0){
+    roots <-  getVolumes()() 
+    #volumes <- getVolumes()
+
+        observe({
+          
+          if(input$download_session_main[1] > 0){
+        #if(!is.null(input$download_session)){
             
-            shinyjs::enable("save_now")
-            #shinyjs::enable("folder_action")
+          shinyjs::enable("save_now")
             
-            project_folder <<- utils::choose.dir()
+          if(is.null(project_folder)){
+          shinyjs::click("download_session")
+          }
+          shinyDirChoose(input, 'download_session', roots= roots, session = session )
+          
+          
+          project_folder <<- parseDirPath(roots, input$download_session)
+          project_folder <<- as.character(project_folder)
+          
+          if(!is.null(project_folder)){
             
-            observeEvent(input$download_session,{
-                
-                updateTabsetPanel(session, "inTabset",
-                                  selected = "save_sesults"
-                )})
+            observe({
+              
+              updateTabsetPanel(session, "inTabset",
+                                selected = "save_sesults"
+              )})
+          }
+          
+        #}
+          }
+        })
+        
+
             
             
             
-        }
-    })
+        
+
     
     
     ## Folder Selection
