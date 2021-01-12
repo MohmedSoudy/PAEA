@@ -50,7 +50,7 @@ install.packages(dependencies.pkg.cran)
 
 2.4. Open the R file named PAEA.r
 
-![](https://raw.githubusercontent.com/AliYoussef96/PAEA/main/for_installation/4.jpg)
+![](https://raw.githubusercontent.com/AliYoussef96/PAEA/main/for_installation/44.jpg)
 
 2.5. Run the whole script by pressing Ctrl+A to select all the script lines, and then press run (or press Ctrl+Enter)
 
